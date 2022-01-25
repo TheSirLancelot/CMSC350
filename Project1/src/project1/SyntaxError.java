@@ -7,7 +7,7 @@ package project1;
  * Filename: SyntaxError.java
  * @author William Weir
  * Date: Jan 19, 2022
- * Description: 
+ * Description: Custom Exception that allows for specifying error message
  */
 
 @SuppressWarnings("serial")
