@@ -5,10 +5,18 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
+/**
+ * Filename: Main.java
+ * 
+ * @author William Weir 
+ * Date: Jan 31, 2022 
+ * Description: main class for project2
+ */
+
 public class Main {
 	private static List<Polynomial> polyList = new ArrayList<>();
 
-//main here
+	// our main method
 	public static void main(String[] args) {
 		processPolyList();
 	}
@@ -49,30 +57,25 @@ public class Main {
 	}
 
 	// Method that checks whether the provided list of Polynomials are in strong order
-	public static boolean checkStrongOrder(List<Polynomial> polyList) {
-		
-		// Set return to true by default
-		boolean isStrongOrder = true;
-		
-		// Getting previous poly to compare
-		Polynomial previous = polyList.get(polyList.size() - 1);
-		
-		// Looping through the list and calling the compareTo method
-		for (int i = polyList.size() - 2; i > 0; i--) {
-			if (previous.compareTo(polyList.get(i)) < 0) {
-				// List is not in Strong Order
-				isStrongOrder = false;
-			}
-		}
-		return isStrongOrder;
-	}
+    public static boolean checkWeakOrder( List<Polynomial> polyList){
+        boolean isWeakOrder = true;
+        
+        // Loop through and compare exponents
+        for(int i = 0; i < polyList.size() - 1; i++){
+        	Polynomial next = polyList.get(i + 1);
+            if (next.compareExponents(polyList.get(i)) < 0){
+                isWeakOrder = false;
+                return isWeakOrder;
+            }
+        }
+        return isWeakOrder;
+    }
 
-//===============================================================================================
-// method: processPolyList / returns: void / catches: InvalidPolynomialSyntax
-// description: calls fromFile to fill a list with Polynomial objects and checks list order
-//===============================================================================================
+	// Method to process the list of polynomials we got from the file
 	public static void processPolyList() {
 		System.out.println("Parsed the following polynomials:");
+
+		// Save return of createArrayFromFile into a new array and parse 
 		try {
 			ArrayList<String> a = createArrayFromFile();
 			for (String element : a) {
@@ -80,16 +83,19 @@ public class Main {
 				System.out.println(p);
 				polyList.add(p);
 			}
+			
+		// catch any invalid syntax
 		} catch (InvalidPolynomialSyntax ex) {
 			JOptionPane.showMessageDialog(JOptionPane.getRootFrame(), ex.getMessage());
+			System.exit(-1);
 		}
 		
 		System.out.println("\nChecking for strong order sort.");
 		// Check for strong order
-		System.out.println("Strong Ordered: " + checkStrongOrder(polyList));
+		System.out.println("Strong Ordered: " + OrderedList.checkSorted(polyList));
 		
 		System.out.println("\nChecking for weak order sort.");
 		// Check for weak order
-		System.out.println("Weak Ordered: " + OrderedList.checkSorted(polyList));
+		System.out.println("Weak Ordered: " + checkWeakOrder(polyList));
 	}
 }

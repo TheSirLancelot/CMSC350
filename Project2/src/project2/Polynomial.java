@@ -36,9 +36,8 @@ public class Polynomial implements Iterable<Polynomial.Term>, Comparable<Polynom
 			}
 		} catch (Exception ex) {
 			// catch an exception and throw a syntax error
-			System.out.println(ex.getLocalizedMessage());
 			termScanner.close();
-			throw new InvalidPolynomialSyntax("Incorrect Syntax.");
+			throw new InvalidPolynomialSyntax(ex.getMessage());
 		}
 		
 		// Close the scanner so you don't get a resource leak
@@ -62,25 +61,33 @@ public class Polynomial implements Iterable<Polynomial.Term>, Comparable<Polynom
 			head.next = null;
 		} else { // find end by looping to null next link
 			while (current.next != null) {
+				//check for misordered exponents
+				if(current.getExponent() < current.next.getExponent()) {
+					throw new InvalidPolynomialSyntax("Exponents not in the correct order");
+				}
 				current = current.next;
 			}
 			current.next = new Term(coefficient, exponent);
 		}
 	}
 
+	// method that handles comparing this polynomial to another
 	@Override
 	public int compareTo(Polynomial otherPoly) {
 		Term thisCurrent = this.head;
 		Term otherCurrent = otherPoly.head;
 		
+		// while neither of the polynomials are null
 		while (thisCurrent != null && otherCurrent != null) {
 			// positive if this is larger, negative otherwise
 			if (thisCurrent.getExponent() != otherCurrent.getExponent()) {
 				return thisCurrent.getExponent() - otherCurrent.getExponent();
-				// casting to an int truncates, so simple checking for larger
+				// casting to an int truncates, so simply checking for larger
 			} else if (thisCurrent.getCoefficient() != otherCurrent.getCoefficient()) {
+				// if the coefficient is larger
 				if (otherCurrent.getCoefficient() > thisCurrent.getCoefficient()) {
 					return -1;
+				// else
 				} else if (otherCurrent.getCoefficient() < thisCurrent.getCoefficient()) {
 					return +1;
 				}
@@ -97,12 +104,40 @@ public class Polynomial implements Iterable<Polynomial.Term>, Comparable<Polynom
 			return +1;
 		}
 	}
+	
+	// method to compare two terms but only via the exponents
+    public int compareExponents(Polynomial poly2) {
+    	// our two polys
+        Term thisPolyTerm = this.head;
+        Term otherPolyTerm = poly2.head;
+        
+        //parse through the list and compare
+        while(thisPolyTerm != null && otherPolyTerm != null) {
+            if (thisPolyTerm.getExponent() != otherPolyTerm.getExponent()) {
+                return thisPolyTerm.getExponent() - otherPolyTerm.getExponent();
+            }
+            else {
+                thisPolyTerm = thisPolyTerm.getNext();
+                otherPolyTerm = otherPolyTerm.getNext();
+            }
+        }
+        if(thisPolyTerm == null && otherPolyTerm == null){
+            return 0;
+        }
+        if (otherPolyTerm == null){
+            return +1;
+        }
+        else {
+            return -1;
+        }
+    }
 
+	// method to output polynomials as a string
 	@Override
 	public String toString() {
 		StringBuilder expressionBuilder = new StringBuilder();
 
-		// first check head to avoid +1x^3 +3x^2
+		// check for first term
 		if (head.coefficient > 0) {
 			expressionBuilder.append(head.toString());
 		} else {
@@ -118,29 +153,37 @@ public class Polynomial implements Iterable<Polynomial.Term>, Comparable<Polynom
 		return expressionBuilder.toString();
 	}
 
+	// class that handles the Term object
 	public class Term {
+		
+		// class variables
 		private double coefficient;
 		private int exponent;
 		private Term next;
 
+		// Term constructor
 		private Term(double coefficient, int exponent) {
 			this.coefficient = coefficient;
 			this.exponent = exponent;
 			this.next = null; // explicitly setting to null
 		}
 
+		// getter
 		private int getExponent() {
 			return this.exponent;
 		}
 
+		// getter
 		private double getCoefficient() {
 			return this.coefficient;
 		}
-
+		
+		// getter
 		private Term getNext() {
 			return next;
 		}
-
+		
+		// method to print the Term out as a string
 		@Override
 		public String toString() {
 			String termString = String.format("%.1f", Math.abs(coefficient));
@@ -155,6 +198,7 @@ public class Polynomial implements Iterable<Polynomial.Term>, Comparable<Polynom
 		}
 	}
 
+	// method to deal with iterating over Terms
 	@Override
 	public Iterator<Term> iterator() {
 		return new Iterator<Term>() {
@@ -174,6 +218,7 @@ public class Polynomial implements Iterable<Polynomial.Term>, Comparable<Polynom
 		};
 	}
 
+	// getter
 	public Term getHead() {
 		return head;
 	}
