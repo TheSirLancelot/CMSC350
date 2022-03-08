@@ -3,11 +3,14 @@ package project4;
 import java.util.LinkedList;
 import java.util.Queue;
 
+/**
+ * Filename: ParenthesizedList.java
+ * 
+ * @author William Weir 
+ * Date: 8 March, 2022 
+ * Description: class handling the printing of a parethesized list
+ */
 public class ParenthesizedList implements DFSActions<Vertex> {
-
-// This class maintain a Queue to trace orders of the nodes and their dependent nodes with proper spacing format
-
-// Deque<Pair<String> res = new LinkedList<>();
 
 	Queue<String> res = new LinkedList<>();
 
@@ -31,6 +34,7 @@ public class ParenthesizedList implements DFSActions<Vertex> {
 		res.add("*");
 	}
 
+	// formatting for print
 	@Override
 	public String toString() {
 
@@ -50,15 +54,13 @@ public class ParenthesizedList implements DFSActions<Vertex> {
 					res.remove();
 					continue;
 				}
-
 			}
+			
 			ans += c + " ";
-
 		}
 
 		ans += ")\n";
 
 		return ans;
-
 	}
 }

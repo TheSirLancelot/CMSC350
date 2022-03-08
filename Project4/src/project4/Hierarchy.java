@@ -3,6 +3,13 @@ package project4;
 import java.util.LinkedList;
 import java.util.Queue;
 
+/**
+ * Filename: Hierarchy.java
+ * 
+ * @author William Weir 
+ * Date: 8 March, 2022 
+ * Description: class handling hierarchy printing
+ */
 public class Hierarchy implements DFSActions<Vertex> {
 
 	Queue<String> res = new LinkedList<>();
@@ -28,13 +35,11 @@ public class Hierarchy implements DFSActions<Vertex> {
 		res.add("*");
 	}
 
+	// formatting the string output
 	@Override
 	public String toString() {
-
 		String ans = "";
-
 		int sz = 0;
-
 		while (res.size() > 0) {
 			String c = res.peek();
 			res.remove();
@@ -67,11 +72,10 @@ public class Hierarchy implements DFSActions<Vertex> {
 			}
 
 			ans += c + " ";
-
 		}
+		
 		ans += "\n";
 
 		return ans;
-
 	}
 }
